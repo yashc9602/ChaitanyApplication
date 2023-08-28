@@ -98,7 +98,7 @@ export default function AppNavBar() {
         position="fixed"
         open={open}
         style={{
-          backgroundColor: "#101460",
+          backgroundColor: "#bc6c25",
           height: "60px",
           width: "100%",
         }}
@@ -120,7 +120,7 @@ export default function AppNavBar() {
             onMouseOver={() => (document.body.style.cursor = "pointer")}
             onClick={() => navigate("/")}
           >
-            LearnAcademy
+            Chaitany
           </Typography>
           {user.isLoggedIn ? (
             <Button
@@ -145,7 +145,7 @@ export default function AppNavBar() {
           ) : (
             <div>
               <Button color="inherit" onClick={() => navigate("/register")}>
-                Register
+              Register
               </Button>
               <Button color="inherit" onClick={() => navigate("/login")}>
                 Login

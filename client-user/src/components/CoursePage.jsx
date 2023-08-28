@@ -18,7 +18,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DownloadIcon from "@mui/icons-material/Download";
 import ClosedCaptionIcon from "@mui/icons-material/ClosedCaption";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
-import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
+// import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
 import Button from "@mui/material/Button";
 import "./coursesStyles.css";
 
@@ -56,8 +56,8 @@ function CoursePage() {
   const isPurchased = purCourses.filter((item) => item._id == id).length === 1;
 
   const makePayment = () => {
-    navigate(`/courses/${id}/payment`)
-  }
+    navigate(`/courses/${id}/payment`);
+  };
 
   return (
     <div className="single-course">
@@ -99,7 +99,7 @@ function CoursePage() {
               <Button
                 variant="contained"
                 style={{
-                  backgroundColor: isPurchased ? "green" : "#bc1c44",
+                  backgroundColor: isPurchased ? "green" : "#ccd5ae",
                   padding: "10px 20px",
                   fontWeight: "700",
                   fontSize: "1rem",
@@ -111,7 +111,7 @@ function CoursePage() {
               <Button
                 variant="contained"
                 style={{
-                  backgroundColor: "#101460",
+                  backgroundColor: "#ccd5ae",
                   padding: "10px 20px",
                   fontWeight: "700",
                   fontSize: "1rem",
@@ -130,7 +130,7 @@ function CoursePage() {
         <Card
           sx={{ width: "350px" }}
           style={{
-            backgroundColor: " #101460",
+            backgroundColor: " #d4a373",
             color: "white",
             borderRadius: "10px",
             paddingRight: "6px",
@@ -170,7 +170,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <OndemandVideoIcon />
                         </ListItemIcon>
-                        <ListItemText primary="20+ Hours of HD video" />
+                        <ListItemText primary="Live Interation" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -178,7 +178,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <FormatListBulletedIcon />
                         </ListItemIcon>
-                        <ListItemText primary="150+ Lessons" />
+                        <ListItemText primary="4 Classes a month" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -186,7 +186,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <DownloadIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Downloadable content" />
+                        <ListItemText primary="Experiential Learning" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -194,7 +194,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <ClosedCaptionIcon />
                         </ListItemIcon>
-                        <ListItemText primary="English captions" />
+                        <ListItemText primary="English Language" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -208,7 +208,7 @@ function CoursePage() {
                         />
                       </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
+                    {/* <ListItem disablePadding>
                       <ListItemButton>
                         <ListItemIcon>
                           <AllInclusiveIcon />
@@ -217,7 +217,7 @@ function CoursePage() {
                           primary="Lifetime access"
                         />
                       </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
                   </List>
                 </nav>
               </Box>

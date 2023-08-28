@@ -65,7 +65,7 @@ function LoginPage() {
             marginBottom: "10px",
           }}
         >
-          Login To LearnAcademy
+          Login To Chaitany
         </Typography>
         {message && (
           <div>

@@ -45,18 +45,17 @@ function ShowCourses() {
         component="div"
         style={{
           flexGrow: 1,
-          padding: "10px",
+          padding: "20px",
           borderRadius: "4px",
           fontWeight: "bold",
           color: "#101460",
           textAlign: "center",
           marginTop: "70px",
-          marginLeft: "210px",
         }}
       >
         All Courses
       </Typography>
-      <div className="all-courses">
+      <div className="all-courses mb-20">
         {courses.length > 0
           ? courses.map((course) => (
             <CourseCard key={course._id} course={course} />
