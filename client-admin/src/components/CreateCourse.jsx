@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CourseForm from "./CourseForm";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 function CreateCourse(props) {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ function CreateCourse(props) {
   const [price, setPrice] = useState("");
   const [imageLink, setImageLink] = useState("");
   const [published, setPublished] = useState(false);
+  const [category, setCategory] = useState("language"); 
 
   useEffect(() => {
     if (props.isUpdate) {
@@ -18,6 +20,7 @@ function CreateCourse(props) {
       setPrice(props.course.price);
       setImageLink(props.course.imageLink);
       setPublished(props.course.published);
+      setCategory(props.course.category);
     }
   }, [props.course]);
 
@@ -34,6 +37,7 @@ function CreateCourse(props) {
         price,
         imageLink,
         published,
+        category,
       }),
     })
       .then((response) => response.json())
@@ -43,11 +47,13 @@ function CreateCourse(props) {
         setImageLink("");
         setTitle("");
         setPrice("");
-        setPublished("");
+        setPublished(false); // Reset published state
+        setCategory("language"); // Reset category
         navigate("/courses");
       })
       .catch((err) => console.log(err));
   }
+
   function updateCourse() {
     fetch(`http://localhost:3000/admin/courses/${props.course._id}`, {
       method: "PUT",
@@ -61,6 +67,7 @@ function CreateCourse(props) {
         price,
         imageLink,
         published,
+        category,
       }),
     })
       .then((response) => response.json())
@@ -86,7 +93,10 @@ function CreateCourse(props) {
       setImageLink={setImageLink}
       published={published}
       setPublished={setPublished}
-    ></CourseForm>
+      category={category}
+      setCategory={setCategory}
+    />
   );
 }
+
 export default CreateCourse;

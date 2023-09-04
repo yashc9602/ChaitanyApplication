@@ -119,7 +119,7 @@ export default function AppNavBar() {
             onMouseOver={() => (document.body.style.cursor = "pointer")}
             onClick={() => navigate("/")}
           >
-            LearnAcademy
+            Chaitany
           </Typography>
           {admin.isLoggedIn ? (
             <Button
@@ -213,6 +213,36 @@ export default function AppNavBar() {
               <ListItemText primary={"Create Courses"} />
             </ListItemButton>
           </ListItem>
+        </List>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/userlist");
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary={"User List"} />
+            </ListItemButton>
+          </ListItem>
+          <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/createbatch");
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Create Batch"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
         </List>
       </Drawer>
     </Box>

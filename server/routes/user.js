@@ -10,6 +10,8 @@ const router = express.Router();
 let signupProps = z.object({
   username: z.string().min(1).max(50).email(),
   password: z.string().min(8).max(50),
+  name: z.string().min(1).max(50), // Add name validation
+  phoneNumber: z.string().min(10).max(15), // Add phone number validation
 });
 
 router.post("/signup", async (req, res) => {
@@ -20,12 +22,14 @@ router.post("/signup", async (req, res) => {
   }
   const username = parsedInput.data.username;
   const password = parsedInput.data.password;
+  const name = parsedInput.data.name;
+  const phoneNumber = parsedInput.data.phoneNumber;
 
   const user = await User.findOne({ username });
   if (user) {
     res.status(403).json({ message: "User already exists" });
   } else {
-    const newUser = new User({ username, password });
+    const newUser = new User({ username, password, name, phoneNumber }); // Include name and phoneNumber
     await newUser.save();
     const token = jwt.sign({ username, role: "user" }, SECRET, {
       expiresIn: "1h",

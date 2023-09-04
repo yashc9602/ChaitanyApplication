@@ -3,6 +3,9 @@ const cors = require("cors");
 const adminRouter = require("./routes/admin");
 const userRouter = require("./routes/user");
 const paymentRouter = require("./routes/payment");
+const teacherRouter = require("./routes/teacher");
+const adminRoutes = require("./routes/admin");
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 require("./database/connect");
 
@@ -14,6 +17,8 @@ app.use(cors());
 app.use("/admin", adminRouter);
 app.use("/users", userRouter);
 app.use("/payment", paymentRouter);
+app.use("/teacher", teacherRouter);
+app.use("/admin", adminRoutes);
 
 
 app.get('/', async (req, res) => {

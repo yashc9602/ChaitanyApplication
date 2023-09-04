@@ -7,20 +7,20 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../store/atoms/user";
+import toast from "react-hot-toast";
 
 import "../index.css";
-import { toast } from "react-hot-toast";
 
 function RegisterPage() {
-  const [user, setUser] = useState({ email: "", password: "" });
+  const [user, setUser] = useState({ email: "", password: "", name: "", phoneNumber: "" });
   const setUserRecoil = useSetRecoilState(userState);
   const [message, setMessage] = useState();
-  console.log({ user })
+
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    if (user.email.trim() === "" || user.password.trim() == "") {
-      setMessage("Email/Password field cannot be empty.");
+    if (user.email.trim() === "" || user.password.trim() === "" || user.name.trim() === "" || user.phoneNumber.trim() === "") {
+      setMessage("All fields are required.");
       return;
     } else {
       try {
@@ -29,6 +29,8 @@ function RegisterPage() {
           {
             username: user.email,
             password: user.password,
+            name: user.name,
+            phoneNumber: user.phoneNumber,
           }
         );
 
@@ -44,7 +46,7 @@ function RegisterPage() {
         toast.success(response.data.message);
         navigate("/courses");
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setMessage(err.response.data.message);
       }
     }
@@ -104,6 +106,26 @@ function RegisterPage() {
           value={user.password}
           onChange={(e) =>
             setUser((prev) => ({ ...prev, password: e.target.value }))
+          }
+        />
+        <TextField
+          id="name"
+          label="Full Name"
+          variant="outlined"
+          type="text"
+          value={user.name}
+          onChange={(e) =>
+            setUser((prev) => ({ ...prev, name: e.target.value }))
+          }
+        />
+        <TextField
+          id="phoneNumber"
+          label="Phone Number"
+          variant="outlined"
+          type="text"
+          value={user.phoneNumber}
+          onChange={(e) =>
+            setUser((prev) => ({ ...prev, phoneNumber: e.target.value }))
           }
         />
         <Button

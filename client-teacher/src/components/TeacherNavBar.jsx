@@ -17,11 +17,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { atom, useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { userState } from "../store/atoms/user";
+import { teacherState } from "../store/atoms/teacher";
 import Button from "@mui/material/Button";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import FolderIcon from "@mui/icons-material/Folder";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import "./style.css";
 
 const drawerWidth = 240;
@@ -76,15 +75,14 @@ const openState = atom({
   default: false,
 });
 
-export default function AppNavBar() {
+export default function TeacherNavBar() {
   const theme = useTheme();
   const [open, setOpen] = useRecoilState(openState);
-  const [user, setUser] = useRecoilState(userState);
+  const [teacher, setTeacher] = useRecoilState(teacherState);
   const navigate = useNavigate();
 
   const handleDrawerOpen = () => {
     setOpen(true);
-    console.log('email: ', user.email)
   };
 
   const handleDrawerClose = () => {
@@ -98,7 +96,7 @@ export default function AppNavBar() {
         position="fixed"
         open={open}
         style={{
-          backgroundColor: "#bc6c25",
+          backgroundColor: "#101460",
           height: "60px",
           width: "100%",
         }}
@@ -107,47 +105,44 @@ export default function AppNavBar() {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={() => user.isLoggedIn && handleDrawerOpen()}
+            onClick={() => teacher.isLoggedIn && handleDrawerOpen()}
             edge="start"
             sx={{ mr: 2, ...(open && { display: "none" }) }}
           >
             <MenuIcon />
           </IconButton>
           <Typography
-            variant="h5"
+            variant="h6"
             component="div"
             sx={{ flexGrow: 1 }}
             onMouseOver={() => (document.body.style.cursor = "pointer")}
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/teacher")}
           >
-            Chaitany
+            Your Teacher Dashboard
           </Typography>
-          {user.isLoggedIn ? (
+          {teacher.isLoggedIn ? (
             <Button
               color="inherit"
               onClick={() => {
-                console.log(`before logout: `)
-                console.log({ user })
-                localStorage.removeItem("token");
-                localStorage.removeItem("isLoggedIn");
-                localStorage.removeItem("email");
-                setUser({
+                localStorage.removeItem("teacherToken");
+                localStorage.removeItem("teacherIsLoggedIn");
+                localStorage.removeItem("teacherEmail");
+                setTeacher({
                   email: "",
                   password: "",
-                  username: "",
                   isLoggedIn: false,
                 });
-                navigate("/");
+                navigate("/login");
               }}
             >
               Logout
             </Button>
           ) : (
             <div>
-              <Button color="inherit" onClick={() => navigate("/register")}>
-              Register
+              <Button color="inherit" onClick={() => navigate("/teacher/register")}>
+                Register
               </Button>
-              <Button color="inherit" onClick={() => navigate("/login")}>
+              <Button color="inherit" onClick={() => navigate("/teacher/login")}>
                 Login
               </Button>
             </div>
@@ -168,17 +163,22 @@ export default function AppNavBar() {
         open={open}
       >
         <DrawerHeader>
-          {user.isLoggedIn && <List>
-            {/* add user name and email */}
-            <ListItem key='name' disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AccountBoxIcon />
-                </ListItemIcon>
-                <ListItemText primary={user?.username} secondary={user?.email} />
-              </ListItemButton>
-            </ListItem>
-          </List>}
+          {teacher.isLoggedIn && (
+            <List>
+              {/* add user name and email */}
+              <ListItem key="name" disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    {/* <AccountBoxIcon /> */}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={teacher?.username}
+                    secondary={teacher?.email}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          )}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -193,13 +193,13 @@ export default function AppNavBar() {
             <ListItemButton
               onClick={() => {
                 handleDrawerClose();
-                navigate("/courses");
+                navigate("/teacher/courses");
               }}
             >
               <ListItemIcon>
-                <LibraryBooksIcon />
+                {/* <LibraryBooksIcon /> */}
               </ListItemIcon>
-              <ListItemText primary={"All Courses"} />
+              <ListItemText primary={"Your Courses"} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -208,13 +208,28 @@ export default function AppNavBar() {
             <ListItemButton
               onClick={() => {
                 handleDrawerClose();
-                navigate("/courses/purchased");
+                navigate("/teacher/batch");
               }}
             >
               <ListItemIcon>
-                <ShoppingBasketIcon />
+                <FolderIcon />
               </ListItemIcon>
-              <ListItemText primary={"Purchased Courses"} />
+              <ListItemText primary={"Your Batches"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/teacher/upload-materials");
+              }}
+            >
+              <ListItemIcon>
+                <PostAddIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Upload Course Materials"} />
             </ListItemButton>
           </ListItem>
         </List>

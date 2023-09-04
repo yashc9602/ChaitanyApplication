@@ -6,55 +6,58 @@ import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useSetRecoilState } from "recoil";
-import { adminState } from "../store/atoms/admin";
+import { teacherState } from "../store/atoms/teacher";
 import toast from "react-hot-toast";
 
 import "../index.css";
 
-function RegisterPage() {
-  const [admin, setAdmin] = useState({
+function TeacherRegistrationPage() {
+  const [teacher, setTeacher] = useState({
     email: "",
     password: "",
-    name: "", // Add the "name" field
-    phoneNumber: "", // Add the "phoneNumber" field
+    name: "",
+    phoneNumber: "",
   });
-  const setAdminRecoil = useSetRecoilState(adminState);
+  const setTeacherRecoil = useSetRecoilState(teacherState);
   const [message, setMessage] = useState();
 
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     if (
-      admin.email.trim() === "" ||
-      admin.password.trim() === "" ||
-      admin.name.trim() === "" || // Check if the name is empty
-      admin.phoneNumber.trim() === "" // Check if the phoneNumber is empty
+      teacher.email.trim() === "" ||
+      teacher.password.trim() === "" ||
+      teacher.name.trim() === "" ||
+      teacher.phoneNumber.trim() === ""
     ) {
-      setMessage("Email, Password, Name, and Phone Number fields cannot be empty.");
+      setMessage("All fields are required.");
       return;
     } else {
       try {
-        const response = await axios.post("http://localhost:3000/admin/signup", {
-          username: admin.email,
-          password: admin.password,
-          name: admin.name, // Send the name to the server
-          phoneNumber: admin.phoneNumber, // Send the phoneNumber to the server
-        });
+        const response = await axios.post(
+          "http://localhost:3000/teacher/signup",
+          {
+            username: teacher.email,
+            password: teacher.password,
+            name: teacher.name,
+            phoneNumber: teacher.phoneNumber,
+          }
+        );
 
-        setAdminRecoil({
-          email: admin.email,
-          username: admin.email.split('@')[0].toUpperCase(),
+        setTeacherRecoil({
+          email: teacher.email,
+          username: teacher.email.split("@")[0].toUpperCase(),
           isLoggedIn: true,
         });
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("email", admin.email);
+        localStorage.setItem("email", teacher.email);
 
         setMessage("");
         toast.success(response.data.message);
-        navigate("/courses");
+        navigate("/teacher/TeacherDashboard");
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setMessage(err.response.data.message);
       }
     }
@@ -77,7 +80,7 @@ function RegisterPage() {
             marginBottom: "10px",
           }}
         >
-          Register An Admin Account
+          Register as a Teacher
         </Typography>
         {message && (
           <div>
@@ -96,24 +99,14 @@ function RegisterPage() {
         )}
       </div>
       <Card className="form">
-      <TextField
-          id="name" // Add the "name" field
-          label="Name"
-          variant="outlined"
-          type="text"
-          value={admin.name}
-          onChange={(e) =>
-            setAdmin((prev) => ({ ...prev, name: e.target.value }))
-          }
-        />
         <TextField
           id="email"
           label="Email"
           variant="outlined"
           type="text"
-          value={admin.email}
+          value={teacher.email}
           onChange={(e) =>
-            setAdmin((prev) => ({ ...prev, email: e.target.value }))
+            setTeacher((prev) => ({ ...prev, email: e.target.value }))
           }
         />
         <TextField
@@ -121,24 +114,33 @@ function RegisterPage() {
           label="Password"
           variant="outlined"
           type="password"
-          value={admin.password}
+          value={teacher.password}
           onChange={(e) =>
-            setAdmin((prev) => ({ ...prev, password: e.target.value }))
+            setTeacher((prev) => ({ ...prev, password: e.target.value }))
           }
         />
-        
         <TextField
-          id="phoneNumber" // Add the "phoneNumber" field
+          id="name"
+          label="Name"
+          variant="outlined"
+          type="text"
+          value={teacher.name}
+          onChange={(e) =>
+            setTeacher((prev) => ({ ...prev, name: e.target.value }))
+          }
+        />
+        <TextField
+          id="phoneNumber"
           label="Phone Number"
           variant="outlined"
           type="text"
-          value={admin.phoneNumber}
+          value={teacher.phoneNumber}
           onChange={(e) =>
-            setAdmin((prev) => ({ ...prev, phoneNumber: e.target.value }))
+            setTeacher((prev) => ({ ...prev, phoneNumber: e.target.value }))
           }
         />
         <Button
-          style={{ backgroundColor: "#101460" }}
+          style={{ backgroundColor: "#101460", marginTop: "20px" }}
           className="button"
           variant="contained"
           onClick={handleRegister}
@@ -148,14 +150,14 @@ function RegisterPage() {
         <br></br>
         <div>
           <h3 style={{ fontWeight: "500" }}>
-            Already a user? Click here to login.
+            Already a teacher? Click here to login.
           </h3>
           <br />
           <Button
             style={{ backgroundColor: "#101460" }}
             className="button"
             variant="contained"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/teacher/login")}
           >
             Login
           </Button>
@@ -165,4 +167,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default TeacherRegistrationPage;

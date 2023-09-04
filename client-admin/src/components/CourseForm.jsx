@@ -24,6 +24,8 @@ function CourseForm({
   setImageLink,
   published,
   setPublished,
+  category,
+  setCategory,
 }) {
   const [message, setMessage] = useState("");
   return (
@@ -107,6 +109,19 @@ function CourseForm({
           <MenuItem value={true}>True</MenuItem>
         </Select>
         {/* <input type="file" accept="image/*" /> */}
+        <FormControl>
+          <InputLabel id="category-label">Category</InputLabel>
+          <Select
+            labelId="category-label"
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <MenuItem value="language">Language</MenuItem>
+            <MenuItem value="skill">Skill</MenuItem>
+            <MenuItem value="lifestyle">Lifestyle</MenuItem>
+          </Select>
+        </FormControl>
 
         <br />
         <Button

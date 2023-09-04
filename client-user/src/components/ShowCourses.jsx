@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/joy/CircularProgress';
-import { Typography } from "@mui/material";
+import { Typography, FormControl, InputLabel,Select,MenuItem } from "@mui/material";
 import "../index.css";
 import { useNavigate } from "react-router-dom";
 import { atom, useRecoilState } from "recoil";
@@ -12,7 +12,10 @@ import "./coursesStyles.css";
 
 const coursesState = atom({
   key: "coursesState",
-  default: [],
+  default: {
+    allCourses: [],
+    filteredCourses: [],
+  },
 });
 
 function ShowCourses() {
@@ -20,6 +23,16 @@ function ShowCourses() {
   const [courses, setCourses] = useRecoilState(coursesState);
   const [open] = useRecoilState(openState);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const filterCoursesByCategory = (category) => {
+    if (category === "all") {
+      setCourses({ ...courses, filteredCourses: courses.allCourses });
+    } else {
+      const filtered = courses.allCourses.filter((course) => course.category === category);
+      setCourses({ ...courses, filteredCourses: filtered });
+    }
+  };
 
   useEffect(() => {
     axios
@@ -29,7 +42,7 @@ function ShowCourses() {
         },
       })
       .then((res) => {
-        setCourses(res.data.courses);
+        setCourses({ allCourses: res.data.courses, filteredCourses: res.data.courses });
         setIsLoading(false);
       })
       .catch((err) => {
@@ -56,14 +69,34 @@ function ShowCourses() {
         All Courses
       </Typography>
       <div className="all-courses mb-20">
-        {courses.length > 0
-          ? courses.map((course) => (
-            <CourseCard key={course._id} course={course} />
-          ))
-          : isLoading
-            ? <CircularProgress size="sm" color="neutral" />
-            : "Oops! No course is currently offered. Return later!"
-        }
+        <FormControl>
+          <InputLabel id="category-label">Select Category</InputLabel>
+          <Select
+            labelId="category-label"
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              filterCoursesByCategory(e.target.value);
+            }}
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="language">Language</MenuItem>
+            <MenuItem value="skill">Skill</MenuItem>
+            <MenuItem value="lifestyle">Lifestyle</MenuItem>
+          </Select>
+        </FormControl>
+        {isLoading ? (
+          <CircularProgress size="sm" color="neutral" />
+        ) : (
+          courses.filteredCourses.length > 0 ? (
+            courses.filteredCourses.map((course) => (
+              <CourseCard key={course._id} course={course} />
+            ))
+          ) : (
+            "Oops! No course is currently offered in this category. Return later!"
+          )
+        )}
       </div>
     </Main>
   );

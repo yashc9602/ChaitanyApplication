@@ -8,6 +8,7 @@ import AppNavBar from "./components/AppNavBar";
 import CreateCourse from "./components/CreateCourse";
 import UpdateCourse from "./components/UpdateCourse";
 import { Toaster } from 'react-hot-toast';
+import UserList from "./components/UserList";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/courses" element={<ShowCourses />} />
+        <Route path="/userlist" element={<UserList />} />
         <Route path="/courses/:id" element={<CoursePage />} />
         <Route path="/updateCourse/:courseId" element={<UpdateCourse />} />
         <Route path="/createCourse" element={<CreateCourse />} />
