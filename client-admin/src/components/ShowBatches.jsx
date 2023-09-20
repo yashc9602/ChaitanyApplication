@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
-import CourseCard from "./CourseCard";
+import BatchCard from "./BatchCard"; // Create a BatchCard component for rendering individual batches
 import { Typography } from "@mui/material";
-import "../index.css";
 import { atom, useRecoilState } from "recoil";
 import axios from "axios";
 import { Main, openState } from "./AppNavBar";
-import "./coursesStyles.css";
+import "../index.css";
+import "./batchesStyles.css";
 
-const coursesState = atom({
-  key: "coursesState",
+const batchesState = atom({
+  key: "batchesState",
   default: [],
 });
 
-function ShowCourses() {
-  const [courses, setCourses] = useRecoilState(coursesState);
+function ShowBatches() {
+  const [batches, setBatches] = useRecoilState(batchesState);
   const [open] = useRecoilState(openState);
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/admin/courses/", {
+      .get("http://localhost:3000/admin/batches/", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       })
       .then((res) => {
-        setCourses(res.data.courses);
+        setBatches(res.data.batches);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -45,18 +45,18 @@ function ShowCourses() {
           marginLeft: "210px",
         }}
       >
-        Courses
+        Batches
       </Typography>
-      <div className="all-courses">
-        {courses.length > 0
-          ? courses.map((course) => (
-              <CourseCard key={course._id} course={course} />
+      <div className="batch-card-container">
+        {batches.length > 0
+          ? batches.map((batch) => (
+              <BatchCard key={batch._id} batch={batch} />
             ))
-          : "Oops! Courses are still not available. Make a new course so that it can be accessed. "}
+          : "Oops! Batches are still not available. Create a new batch so that it can be accessed."}
       </div>
     </Main>
   );
 }
 
-export default ShowCourses;
-export { coursesState };
+export default ShowBatches;
+export { batchesState };

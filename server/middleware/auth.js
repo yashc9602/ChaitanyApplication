@@ -11,7 +11,8 @@ const authenticateJwt = (req, res, next) => {
       if (err) {
         return res.sendStatus(403);
       }
-      req.user = user;
+      // Modify this line to include the user ID, assuming user ID is present in the token payload
+      req.user = { id: user.id, ...user };
       next();
     });
   } else {

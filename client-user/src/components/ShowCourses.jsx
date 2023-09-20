@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CourseCard from "./CourseCard";
 import Button from "@mui/material/Button";
 import CircularProgress from '@mui/joy/CircularProgress';

@@ -20,7 +20,6 @@ import { useNavigate } from "react-router-dom";
 import { teacherState } from "../store/atoms/teacher";
 import Button from "@mui/material/Button";
 import FolderIcon from "@mui/icons-material/Folder";
-import PostAddIcon from "@mui/icons-material/PostAdd";
 import "./style.css";
 
 const drawerWidth = 240;
@@ -193,7 +192,7 @@ export default function TeacherNavBar() {
             <ListItemButton
               onClick={() => {
                 handleDrawerClose();
-                navigate("/teacher/courses");
+                navigate("/teacher/course");
               }}
             >
               <ListItemIcon>
@@ -215,21 +214,6 @@ export default function TeacherNavBar() {
                 <FolderIcon />
               </ListItemIcon>
               <ListItemText primary={"Your Batches"} />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <List>
-          <ListItem disablePadding>
-            <ListItemButton
-              onClick={() => {
-                handleDrawerClose();
-                navigate("/teacher/upload-materials");
-              }}
-            >
-              <ListItemIcon>
-                <PostAddIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Upload Course Materials"} />
             </ListItemButton>
           </ListItem>
         </List>

@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { SECRET, authenticateJwt } = require("../middleware/auth");
-const { Admin, Course, Teacher } = require("../database/models");
+const { Admin, Course, Teacher, Batch, User } = require("../database/models");
 const z = require("zod");
 
 const router = express.Router();
@@ -9,8 +9,6 @@ const router = express.Router();
 let signupProps = z.object({
   username: z.string().min(1).max(50).email(),
   password: z.string().min(8).max(50),
-  name: z.string().min(1).max(50), // Add name validation
-  phoneNumber: z.string().min(10).max(15), // Add phone number validation
 });
 
 router.post("/signup", async (req, res) => {
@@ -42,6 +40,7 @@ router.post("/signup", async (req, res) => {
 router.get("/me", authenticateJwt, (req, res) => {
   res.json(req.user.username);
 });
+
 
 router.post("/login", async (req, res) => {
   const parsedInput = signupProps.safeParse(req.body);
@@ -102,7 +101,7 @@ router.get("/courses", authenticateJwt, async (req, res) => {
 
 router.post("/batches", authenticateJwt, async (req, res) => {
   try {
-    const { courseId, teacherId, batchName, startDate, endDate, maxStudents } = req.body;
+    const { name, startDate, endDate, maxStudents, courseId, teacherId } = req.body;
 
     // Check if the provided courseId and teacherId exist in the database
     const course = await Course.findById(courseId);
@@ -114,7 +113,7 @@ router.post("/batches", authenticateJwt, async (req, res) => {
 
     // Create a new batch
     const batch = new Batch({
-      name: batchName,
+      name,
       startDate,
       endDate,
       maxStudents,
@@ -131,6 +130,48 @@ router.post("/batches", authenticateJwt, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.get("/users", async (req, res) => {
+  try {
+    const users = await User.find().populate("assignedBatches").select("name phoneNumber assignedBatches");
+    const batches = await Batch.find().select("name"); // Fetch available batches
+
+    res.json({ users, batches });
+  } catch (error) {
+    console.error("Error fetching users and batches:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Route to assign a user to a batch
+router.post("/users/:userId/assign-batch", async (req, res) => {
+  const { userId } = req.params;
+  const { batchId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const batch = await Batch.findById(batchId);
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+
+    // Assign the user to the selected batch
+    user.assignedBatches.push(batchId);
+    await user.save();
+
+    res.json({ message: `User ${user.name} assigned to batch ${batch.name}` });
+  } catch (error) {
+    console.error("Error assigning user to batch:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
 
 
 module.exports = router;

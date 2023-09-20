@@ -45,6 +45,13 @@ const batchSchema = new mongoose.Schema({
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
   teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  courseMaterials: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
+});
+
+const fileSchema = new mongoose.Schema({
+  filename: String,
+  contentType: String,
+  data: Buffer, // Binary data
 });
 
 // Define mongoose models
@@ -53,5 +60,6 @@ const Teacher = mongoose.model("Teacher", teacherSchema);
 const Admin = mongoose.model("Admin", adminSchema);
 const Course = mongoose.model("Course", courseSchema);
 const Batch = mongoose.model("Batch", batchSchema);
+const File = mongoose.model("File", fileSchema);
 
-module.exports = { User, Teacher, Admin, Course, Batch };
+module.exports = { User, Teacher, Admin, Course, Batch, File};

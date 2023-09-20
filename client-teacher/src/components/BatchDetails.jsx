@@ -1,70 +1,193 @@
-import React, { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import {
+  Box,
+  Button,
+  TextField,
+  Snackbar,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-function BatchDetails({ batchId }) {
-  // You can fetch the batch details data based on the provided batchId
-  const [batchDetails, setBatchDetails] = useState(null);
+function BatchDetails() {
+  const { batchId } = useParams();
+  const [materialTitle, setMaterialTitle] = useState("");
+  const [file, setFile] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [courseMaterials, setCourseMaterials] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulated data for illustration; replace with actual data fetching logic
-    const mockBatchDetails = {
-      name: "Mathematics 101",
-      course: "Mathematics",
-      startDate: "2023-09-01",
-      endDate: "2023-12-01",
-      students: [
-        { id: "student1", name: "John Doe" },
-        { id: "student2", name: "Alice Johnson" },
-        // Add more enrolled students as needed
-      ],
-    };
-
-    setBatchDetails(mockBatchDetails);
+    // Fetch course materials for the selected batch
+    axios
+      .get(`http://localhost:3000/teacher/batch/${batchId}/materials`, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setCourseMaterials(response.data.courseMaterials);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching course materials:", error);
+        setIsLoading(false);
+      });
   }, [batchId]);
 
-  if (!batchDetails) {
-    // Loading state or error handling logic can be added here
-    return <div>Loading...</div>;
-  }
+  const handleMaterialUpload = (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      setSnackbarMessage("No file uploaded.");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", materialTitle);
+    formData.append("file", file);
+
+    axios
+      .post(
+        `http://localhost:3000/teacher/batch/${batchId}/materials`,
+        formData,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Material uploaded successfully");
+        setMaterialTitle("");
+        setFile(null);
+        setSnackbarMessage("Material uploaded successfully");
+        setOpenSnackbar(true);
+        // Refresh the course materials list
+        axios
+          .get(`http://localhost:3000/teacher/batch/${batchId}/materials`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            setCourseMaterials(response.data.courseMaterials);
+          })
+          .catch((error) => {
+            console.error("Error fetching course materials:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error uploading material:", error);
+        setSnackbarMessage("Error uploading material");
+        setOpenSnackbar(true);
+      });
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
+  const handleDeleteMaterial = (materialId) => {
+    axios
+      .delete(
+        `http://localhost:3000/teacher/batch/${batchId}/materials/${materialId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Material deleted successfully");
+        setSnackbarMessage("Material deleted successfully");
+        setOpenSnackbar(true);
+        // Refresh the course materials list
+        axios
+          .get(`http://localhost:3000/teacher/batch/${batchId}/materials`, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            setCourseMaterials(response.data.courseMaterials);
+          })
+          .catch((error) => {
+            console.error("Error fetching course materials:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error deleting material:", error);
+        setSnackbarMessage("Error deleting material");
+        setOpenSnackbar(true);
+      });
+  };
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
-        Batch Details: {batchDetails.name}
-      </Typography>
-      <Paper elevation={3}>
+    <Box>
+      <h2>Batch Details</h2>
+      <h3>Upload Course Material</h3>
+      <TextField
+        label="Material Title"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={materialTitle}
+        onChange={(e) => setMaterialTitle(e.target.value)}
+      />
+      <input
+        type="file"
+        accept=".pdf,.doc,.docx"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleMaterialUpload}
+        disabled={!materialTitle || !file}
+      >
+        Upload Material
+      </Button>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={4000} // Adjust the duration as needed
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
+      <h3>Course Materials</h3>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
         <List>
-          <ListItem>
-            <ListItemText primary={`Course: ${batchDetails.course}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`Start Date: ${batchDetails.startDate}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary={`End Date: ${batchDetails.endDate}`} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Enrolled Students:" />
-          </ListItem>
-          {batchDetails.students.map((student) => (
-            <ListItem key={student.id}>
-              <ListItemText primary={student.name} />
+          {courseMaterials.map((material) => (
+            <ListItem key={material._id}>
+              <ListItemText
+                primary={material.title}
+                secondary={material.filename} // Display the file name as secondary text
+              />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDeleteMaterial(material._id)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
-      </Paper>
-      <Button variant="contained" color="primary" style={{ marginTop: "20px" }}>
-        Edit Batch
-      </Button>
-      <Button variant="contained" color="secondary" style={{ marginLeft: "10px", marginTop: "20px" }}>
-        Delete Batch
-      </Button>
-    </div>
+      )}
+    </Box>
   );
 }
 

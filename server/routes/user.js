@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { SECRET, authenticateJwt } = require("../middleware/auth");
-const { User, Course } = require("../database/models");
+const { User, Course, Batch, File } = require("../database/models");
 const { getACourse } = require("../database/utils");
 const z = require("zod");
 
@@ -10,9 +10,8 @@ const router = express.Router();
 let signupProps = z.object({
   username: z.string().min(1).max(50).email(),
   password: z.string().min(8).max(50),
-  name: z.string().min(1).max(50), // Add name validation
-  phoneNumber: z.string().min(10).max(15), // Add phone number validation
 });
+
 
 router.post("/signup", async (req, res) => {
   const parsedInput = signupProps.safeParse(req.body);
@@ -38,28 +37,59 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+
 router.get("/me", authenticateJwt, (req, res) => {
   res.json(req.user.username);
 });
 
+const userLoginSchema = z.object({
+  username: z.string().min(1).max(50).email(),
+  password: z.string().min(8).max(50),
+});
+
 router.post("/login", async (req, res) => {
-  const parsedInput = signupProps.safeParse(req.body);
-  if (!parsedInput.success) {
-    res.status(411).json({ message: parsedInput.error.issues[0].message });
-    return;
-  }
-  const username = parsedInput.data.username;
-  const password = parsedInput.data.password;
-  const user = await User.findOne({ username, password });
-  if (user) {
-    const token = jwt.sign({ username, role: "user" }, SECRET, {
-      expiresIn: "1h",
+  try {
+
+    const userLoginSchema = z.object({
+      username: z.string().min(1).max(50).email(),
+      password: z.string().min(8).max(50),
     });
-    res.json({ message: "Logged in successfully", token });
-  } else {
-    res.status(403).json({ message: "Invalid username or password" });
+    // Validate the input using the userLoginSchema
+    const parsedInput = userLoginSchema.safeParse(req.body);
+
+    if (!parsedInput.success) {
+      return res.status(400).json({ message: 'Invalid input data' });
+    }
+
+    const { username, password } = parsedInput.data;
+
+    // Check if the user exists
+    const user = await User.findOne({ username, password });
+
+    if (!user) {
+      return res.status(403).json({ message: 'Invalid username or password' });
+    }
+
+    // Create a token with user's ID in the payload
+    const token = jwt.sign(
+      {
+        id: user._id, // Include the user's ID in the token payload
+        username,
+        role: 'user',
+      },
+      SECRET,
+      {
+        expiresIn: '1h',
+      }
+    );
+
+    return res.json({ message: 'Logged in successfully', token });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 router.get("/courses", authenticateJwt, async (req, res) => {
   const courses = await Course.find({ published: true });
@@ -67,6 +97,22 @@ router.get("/courses", authenticateJwt, async (req, res) => {
     res.json({ courses });
   } else {
     res.json({ message: "Empty" });
+  }
+});
+
+// Define a route to fetch user data along with associated courses and batches
+router.get("/", async (req, res) => {
+  try {
+    // Fetch users along with their associated courses and batches
+    const users = await User.find({})
+      .populate("purchasedCourses", "title") // Populate the "purchasedCourses" field with "title" only
+      .populate("assignedBatches", "name startDate endDate maxStudents")
+      .select("username name phoneNumber purchasedCourses assignedBatches");
+
+    res.json({ users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
@@ -92,6 +138,8 @@ router.post("/courses/:courseId", authenticateJwt, async (req, res) => {
 
 });
 
+
+
 router.get("/courses/:courseId", authenticateJwt, async (req, res) => {
   const course = await Course.findById(req.params.courseId);
   if (course) {
@@ -100,6 +148,7 @@ router.get("/courses/:courseId", authenticateJwt, async (req, res) => {
     res.status(404).json({ message: "Course not found" });
   }
 });
+
 
 router.get("/purchasedCourses", authenticateJwt, async (req, res) => {
   const user = await User.findOne({ username: req.user.username }).populate(
@@ -111,5 +160,80 @@ router.get("/purchasedCourses", authenticateJwt, async (req, res) => {
     res.status(403).json({ message: "User not found" });
   }
 });
+
+
+// Route to fetch batch details, including course materials
+router.get('/batch-details/:batchId', authenticateJwt, async (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+    const batch = await Batch.findById(batchId).populate('courseMaterials');
+    return res.json({ batch });
+  } catch (error) {
+    console.error('Error fetching batch details:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Route to download course material by ID
+router.get('/download/:materialId', authenticateJwt, async (req, res) => {
+  try {
+    const materialId = req.params.materialId;
+    const material = await File.findById(materialId);
+
+    if (!material) {
+      return res.status(404).json({ message: 'Material not found' });
+    }
+
+    // Set headers for file download
+    res.setHeader('Content-Disposition', `attachment; filename="${material.filename}"`);
+    res.setHeader('Content-Type', material.contentType);
+
+    // Send file data as a response
+    res.send(material.data);
+  } catch (error) {
+    console.error('Error downloading material:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// Add this route handler to your user.js file
+router.get('/assigned-batches', authenticateJwt, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Find the user by ID to get their assigned batches
+    const user = await User.findById(userId).populate('assignedBatches');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const assignedBatches = user.assignedBatches;
+
+    return res.json({ batches: assignedBatches });
+  } catch (error) {
+    console.error('Error fetching assigned batches:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get("/batch/:batchId/materials", async (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+
+    // Query the Batch model to find the batch and populate the course materials
+    const batch = await Batch.findById(batchId).populate("courseMaterials");
+
+    if (!batch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+
+    return res.json({ courseMaterials: batch.courseMaterials });
+  } catch (error) {
+    console.error("Error fetching course materials:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 module.exports = router;

@@ -10,6 +10,8 @@ import AppNavBar from "./components/AppNavBar";
 import PaymentForm from "./components/PaymentForm";
 import AddCourse from "./components/AddCourse";
 import { Toaster } from 'react-hot-toast';
+import AssignedBatches from "./components/AssignedBatches";
+import BatchDetails from "./components/BatchDetails";
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
         <Route path="/courses/purchased" element={<PurchasedCourses />} />
         <Route path="/courses/:id/payment" element={<PaymentForm />} />
         <Route path="/courses/:id/confirm-payment" element={<AddCourse />} />
+        <Route path="/assigned-batches" element={ <AssignedBatches />} />
+        <Route path="/batch-details/:batchId/materials" element={<BatchDetails />} />
+
       </Routes>
       <Toaster />
     </Router>

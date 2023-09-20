@@ -30,6 +30,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
+    marginTop: `60px`, // Add this margin to push content below the navigation bar
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -215,6 +216,21 @@ export default function AppNavBar() {
                 <ShoppingBasketIcon />
               </ListItemIcon>
               <ListItemText primary={"Purchased Courses"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/assigned-batches");
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Assigned Batches"} />
             </ListItemButton>
           </ListItem>
         </List>

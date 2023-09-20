@@ -242,6 +242,21 @@ export default function AppNavBar() {
               <ListItemText primary={"Create Batch"} />
             </ListItemButton>
           </ListItem>
+          <List>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/batches");
+              }}
+            >
+              <ListItemIcon>
+                <ShoppingBasketIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Show Batches"} />
+            </ListItemButton>
+          </ListItem>
+        </List>
         </List>
         </List>
       </Drawer>

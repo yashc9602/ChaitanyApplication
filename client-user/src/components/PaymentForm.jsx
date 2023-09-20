@@ -6,66 +6,71 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const PaymentForm = () => {
-    const { id } = useParams();
-    const [clientSecret, setClientSecret] = useState("");
+  const { id } = useParams();
+  const [clientSecret, setClientSecret] = useState("");
+  const [loading, setLoading] = useState(true); // Add loading state
+  const [error, setError] = useState(null); // Add error state
 
-    useEffect(() => {
-        console.log(`on-client--clientSecret: ${clientSecret}`)
-        console.log(`type: ${typeof clientSecret}`)
-    }, [clientSecret])
+  useEffect(() => {
+    const fetchClientSecret = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/users/courses/${id}`, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        });
+        const p = res.data.course.price;
 
-    const paymentHandler = useCallback(async () => {
         try {
-            // get the price first 
-            const res = await axios.get(`http://localhost:3000/users/courses/${id}`, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
-                }
-            });
-            console.log('res1: ', res.data.course.price)
-            const p = res.data.course.price;
-            // next create the payment intent
-            try {
-                const res2 = await axios
-                    .post("http://localhost:3000/payment/create-payment-intent", {
-                        course: { price: p }
-                    }, {
-                        headers: { "Content-Type": "application/json" }
-                    });
-                console.log('res2: ', res2.data);
-                setClientSecret(res2.data.clientSecret)
-            } catch (error) {
-                console.log(`error creating payment intent ${error}`)
+          const res2 = await axios.post(
+            "http://localhost:3000/payment/create-payment-intent",
+            {
+              course: { price: p },
+            },
+            {
+              headers: { "Content-Type": "application/json" },
             }
-
+          );
+          setClientSecret(res2.data.clientSecret);
+          setLoading(false); // Set loading to false when clientSecret is fetched
         } catch (error) {
-            console.log(`error fetching course data ${error}`)
+          setError("Error creating payment intent");
+          setLoading(false); // Set loading to false on error
         }
-
-    }, [id])
-
-    useEffect(() => {
-        console.log(`before fetch ${clientSecret}`)
-        paymentHandler()
-    }, []);
-
-    const appearance = {
-        theme: 'stripe',
-    };
-    const options = {
-        clientSecret,
-        appearance,
+      } catch (error) {
+        setError("Error fetching course data");
+        setLoading(false); // Set loading to false on error
+      }
     };
 
-    return (
-        <div className="App">
-            {clientSecret && (
-                <Elements options={options} stripe={stripePromise} key={clientSecret}>
-                    <CheckoutForm id={id} />
-                </Elements>
-            )}
-        </div>
-    );
-}
+    fetchClientSecret();
+  }, [id]);
+
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
+  if (loading) {
+    // Display a loading spinner or message
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    // Display an error message
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div className="App">
+      <Elements options={options} stripe={stripePromise} key={clientSecret}>
+        <CheckoutForm id={id} />
+      </Elements>
+    </div>
+  );
+};
 
 export default PaymentForm;
