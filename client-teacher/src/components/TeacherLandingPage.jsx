@@ -22,13 +22,7 @@ function TeacherLandingPage() {
             {isLoggedIn ? "Go to Dashboard" : "Login Here"}
           </button>
         </div>
-        <div>
-          <img
-            className="img-content"
-            src="https://your-teacher-landing-page-image-url.com"
-            alt="Teacher Landing Page Image"
-          />
-        </div>
+  
       </div>
     </Main>
   );

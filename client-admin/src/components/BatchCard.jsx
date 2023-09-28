@@ -34,6 +34,12 @@ function BatchCard(props) {
     }
   }
 
+  // Function to format date in "dd MMM yyyy" format
+  function formatDate(dateString) {
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
+
   return (
     <div>
       <Card
@@ -55,20 +61,13 @@ function BatchCard(props) {
             component="div"
             className="batch-description"
           >
-            Start Date: {props.batch.startDate}<br />
-            End Date: {props.batch.endDate}<br />
+            Start Date: {formatDate(props.batch.startDate)}<br />
+            End Date: {formatDate(props.batch.endDate)}<br />
             Max Students: {props.batch.maxStudents}<br />
             Course ID: {props.batch.courseId}<br />
             Teacher ID: {props.batch.teacherId}
           </Typography>
           <div className="batch-actions">
-            <Button
-              variant="contained"
-              className="batch-button batch-update-button"
-              onClick={() => navigate(`/updateBatch/${props.batch._id}`)}
-            >
-              Update
-            </Button>
             <Button
               variant="contained"
               className="batch-button batch-delete-button"

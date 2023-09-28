@@ -30,7 +30,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
-    marginTop: `60px`, // Add this margin to push content below the navigation bar
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -99,7 +98,7 @@ export default function AppNavBar() {
         position="fixed"
         open={open}
         style={{
-          backgroundColor: "#bc6c25",
+          backgroundColor: "#023047",
           height: "60px",
           width: "100%",
         }}
@@ -176,7 +175,7 @@ export default function AppNavBar() {
                 <ListItemIcon>
                   <AccountBoxIcon />
                 </ListItemIcon>
-                <ListItemText primary={user?.username} secondary={user?.email} />
+                <ListItemText primary={user?.username}  />
               </ListItemButton>
             </ListItem>
           </List>}

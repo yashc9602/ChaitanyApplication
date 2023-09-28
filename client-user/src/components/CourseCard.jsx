@@ -19,6 +19,7 @@ function CourseCard(props) {
           flexDirection: "column",
           fontFamily: "Arial, sans-serif",
           border: isMoveOver ? "1px solid #bc1c44" : "1px solid lightsteelblue",
+          borderRadius: "5%",
         }}
         onMouseOver={() => setIsMoueOver(true)}
         onMouseLeave={() => setIsMoueOver(false)}

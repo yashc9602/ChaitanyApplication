@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
@@ -7,21 +7,13 @@ import {
   ListItem,
   ListItemText,
   CircularProgress,
-  makeStyles,
-} from "@mui/material/styles";
-import DownloadIcon from "@mui/icons-material/GetApp";
-
-const useStyles = makeStyles((theme) => ({
-  content: {
-    marginTop: "60px", // Adjust the value to match the height of your navigation bar
-  },
-}));
+  Button,
+} from "@mui/material";
 
 function CourseMaterials() {
   const { batchId } = useParams();
   const [courseMaterials, setCourseMaterials] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const classes = useStyles();
 
   useEffect(() => {
     // Fetch course materials for the selected batch
@@ -37,9 +29,39 @@ function CourseMaterials() {
       });
   }, [batchId]);
 
+  const handleDownloadMaterial = (materialId, filename) => {
+    // Make a request to download the material by ID
+    axios
+      .get(
+        `http://localhost:3000/users/batch/${batchId}/download/${materialId}`,
+        {
+          responseType: "blob", // Set response type to blob to handle binary data
+        }
+      )
+      .then((response) => {
+        // Create a blob URL for the file
+        const blob = new Blob([response.data]);
+        const url = window.URL.createObjectURL(blob);
+
+        // Create an anchor element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename || "material"; // You can provide a default filename
+        a.click();
+
+        // Revoke the blob URL to free up resources
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Error downloading material:", error);
+      });
+  };
+
   return (
-    <Box className={classes.content}>
-      <h3>Course Materials</h3>
+    <Box
+      style={{ marginTop: "100px", marginLeft: "20px", marginRight: "20px" }}
+    >
+      <h2>Course Materials</h2>
       {isLoading ? (
         <CircularProgress />
       ) : (
@@ -50,7 +72,14 @@ function CourseMaterials() {
                 primary={material.title} // Display material title
                 secondary={material.filename} // Display file name
               />
-              {/* Other actions like download */}
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  handleDownloadMaterial(material._id, material.filename)
+                }
+              >
+                Download
+              </Button>
             </ListItem>
           ))}
         </List>

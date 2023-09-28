@@ -196,6 +196,22 @@ app.get("/users/batch-details/:batchId/materials", authenticateJwt, async (req, 
   }
 });
 
+app.delete("/admin/batches/:batchId", async (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+    const deletedBatch = await Batch.findByIdAndRemove(batchId);
+
+    if (!deletedBatch) {
+      return res.status(404).json({ message: "Batch not found" });
+    }
+
+    return res.status(200).json({ message: "Batch deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting batch:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 
 app.listen(3000, () => console.log("Server running on port 3000"));

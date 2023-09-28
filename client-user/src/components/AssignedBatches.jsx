@@ -6,6 +6,7 @@ import {
   Typography,
   Button,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -33,30 +34,32 @@ function AssignedBatches() {
   }, []);
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
+    <Box style={{margin: "10em"}}>
+      <Typography variant="h4" gutterBottom >
         Your Assigned Batches
       </Typography>
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <div>
+        <Grid container spacing={2}>
           {batches.map((batch) => (
-            <Card key={batch._id} sx={{ marginBottom: 2 }}>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {batch.name}
-                </Typography>
-                {/* Link to the batch details page with batchId as a URL parameter */}
-                <Link to={`/batch-details/${batch._id}/materials`}>
-                  <Button variant="outlined" color="primary">
-                    View Batch
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={batch._id}>
+              <Card sx={{ marginBottom: 2 }}>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {batch.name}
+                  </Typography>
+                  {/* Link to the batch details page with batchId as a URL parameter */}
+                  <Link to={`/batch-details/${batch._id}/materials`} key={batch._id}>
+                    <Button variant="outlined" color="primary">
+                      View Batch
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       )}
     </Box>
   );

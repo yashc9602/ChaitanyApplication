@@ -4,6 +4,8 @@ const { SECRET, authenticateJwt } = require("../middleware/auth");
 const { User, Course, Batch, File } = require("../database/models");
 const { getACourse } = require("../database/utils");
 const z = require("zod");
+const fs = require("fs");
+const path = require("path");
 
 const router = express.Router();
 
@@ -234,6 +236,34 @@ router.get("/batch/:batchId/materials", async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 });
+
+router.get("/users/batch/:batchId/download/:materialId", (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+    const materialId = req.params.materialId;
+
+    // Implement logic to fetch the material from the database using materialId
+    // For example, you can use Mongoose to find the material by ID
+
+    // In this example, we'll assume that you have the file path and content type
+    // of the material in your database
+    const filePath = "/path/to/material/file.pdf"; // Replace with your file path
+    const contentType = "application/pdf"; // Replace with the correct content type
+
+    // Set the response headers for file download
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Disposition", `attachment; filename=material.pdf`);
+
+    // Create a read stream from the file path and pipe it to the response
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error("Error downloading material:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 
 
 module.exports = router;

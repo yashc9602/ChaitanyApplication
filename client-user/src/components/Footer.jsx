@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-blue-600 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
+    <footer style={{ backgroundColor: "#023047"}} className="text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left">
       <div className="flex items-center justify-center border-b-2 border-neutral-200 p-6 dark:border-neutral-500 lg:justify-center">
         <div className="mr-12 hidden lg:block">
           <span>Connect with us on social networks:</span>
@@ -118,7 +118,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="bg-neutral-200 p-6 text-center dark:bg-neutral-700">
+      <div style={{backgroundColor: "#023047"}} className="p-6 text-center dark:bg-neutral-700">
         <span>© 2023 Copyright : </span>
         <a
           className="font-semibold text-neutral-600 dark:text-neutral-400"

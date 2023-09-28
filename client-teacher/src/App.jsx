@@ -8,7 +8,7 @@ import AssignedBatches from "./components/AssignedBatches";
 import BatchDetails from "./components/BatchDetails";
 import { Toaster } from 'react-hot-toast';
 import TeacherNavBar from "./components/TeacherNavBar";
-import YourCourses from "./components/YourCourses";
+// import YourCourses from "./components/YourCourses";
 import YourBatches from "./components/YourBatches";
 
 
@@ -19,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<TeacherLandingPage />} />
         <Route path="/teacher" element={<TeacherLandingPage />} />
-        <Route path="/teacher/course" element={<YourCourses />} />
+        {/* <Route path="/teacher/course" element={<YourCourses />} /> */}
         <Route path="/teacher/batch" element={<YourBatches />} />
         <Route path="/teacher/upload-materials" element={<UploadMaterials />} />
         <Route path="/teacher/register" element={<TeacherRegistration />} />

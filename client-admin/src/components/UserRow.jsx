@@ -39,7 +39,7 @@ function UserRow({ user }) {
   }, []);
 
   return (
-    <Card sx={{ minWidth: 275, marginBottom: 16 }}>
+    <Card sx={{ minWidth: 275, marginBottom: 16 , marginTop: 12 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {user.name}

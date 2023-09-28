@@ -187,7 +187,7 @@ export default function TeacherNavBar() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
+        {/* <List>
           <ListItem disablePadding>
             <ListItemButton
               onClick={() => {
@@ -196,12 +196,11 @@ export default function TeacherNavBar() {
               }}
             >
               <ListItemIcon>
-                {/* <LibraryBooksIcon /> */}
               </ListItemIcon>
               <ListItemText primary={"Your Courses"} />
             </ListItemButton>
           </ListItem>
-        </List>
+        </List> */}
         <List>
           <ListItem disablePadding>
             <ListItemButton
