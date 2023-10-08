@@ -263,6 +263,35 @@ router.get("/users/batch/:batchId/download/:materialId", (req, res) => {
   }
 });
 
+router.get("/:materialId/download", async (req, res) => {
+  try {
+    const materialId = req.params.materialId;
+    const material = await Material.findById(materialId);
+
+    if (!material) {
+      return res.status(404).json({ message: "Material not found" });
+    }
+
+    // Set the response headers for downloading the file
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${material.filename}`
+    );
+    res.setHeader("Content-Type", material.contentType);
+
+    // Send the binary data as the response
+    res.send(material.data);
+  } catch (error) {
+    console.error("Error downloading material:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// app.post('/api/send-contact-email', (req, res) => {
+//   const contactData = req.body; // Assuming you're using body-parser or similar middleware
+//   sendContactEmail(contactData); // Call your email function
+//   res.status(200).json({ message: 'Email sent successfully' });
+// });
 
 
 

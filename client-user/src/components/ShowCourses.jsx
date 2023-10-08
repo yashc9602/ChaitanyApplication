@@ -53,52 +53,95 @@ function ShowCourses() {
 
   return (
     <Main open={open}>
+  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <Typography
+      variant="h4"
+      component="div"
+      style={{
+        flexGrow: 1,
+        padding: "20px",
+        borderRadius: "4px",
+        fontWeight: "bold",
+        color: "#101460",
+        textAlign: "center",
+        marginTop: "70px",
+        marginLeft: "20%",
+      }}
+    >
+      All Courses
+    </Typography>
+    <div style={{ display: "flex", alignItems: "center"}}>
       <Typography
-        variant="h4"
-        component="div"
+        variant="subtitle1"
         style={{
-          flexGrow: 1,
-          padding: "20px",
-          borderRadius: "4px",
+          fontSize: "16px",
           fontWeight: "bold",
-          color: "#101460",
-          textAlign: "center",
-          marginTop: "70px",
+          marginRight: "10px",
+          color: selectedCategory === "all" ? "#101460" : "#000", // Highlight selected category
+          cursor: "pointer",
         }}
+        onClick={() => filterCoursesByCategory("all")}
       >
-        All Courses
+        All
       </Typography>
-      <div className="all-courses mb-20">
-        <FormControl>
-          <InputLabel id="category-label">Select Category</InputLabel>
-          <Select
-            labelId="category-label"
-            id="category"
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-              filterCoursesByCategory(e.target.value);
-            }}
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="language">Language</MenuItem>
-            <MenuItem value="skill">Skill</MenuItem>
-            <MenuItem value="lifestyle">Lifestyle</MenuItem>
-          </Select>
-        </FormControl>
-        {isLoading ? (
-          <CircularProgress size="sm" color="neutral" />
-        ) : (
-          courses.filteredCourses.length > 0 ? (
-            courses.filteredCourses.map((course) => (
-              <CourseCard key={course._id} course={course} />
-            ))
-          ) : (
-            "Oops! No course is currently offered in this category. Return later!"
-          )
-        )}
-      </div>
-    </Main>
+      <Typography
+        variant="subtitle1"
+        style={{
+          fontSize: "16px",
+          fontWeight: "bold",
+          marginRight: "10px",
+          color: selectedCategory === "language" ? "#101460" : "#000", // Highlight selected category
+          cursor: "pointer",
+        }}
+        onClick={() => filterCoursesByCategory("language")}
+      >
+        Language
+      </Typography>
+      <Typography
+        variant="subtitle1"
+        style={{
+          fontSize: "16px",
+          fontWeight: "bold",
+          marginRight: "10px",
+          color: selectedCategory === "skill" ? "#101460" : "#000", // Highlight selected category
+          cursor: "pointer",
+        }}
+        onClick={() => filterCoursesByCategory("skill")}
+      >
+        Skill
+      </Typography>
+      <Typography
+        variant="subtitle1"
+        style={{
+          fontSize: "16px",
+          fontWeight: "bold",
+          color: selectedCategory === "lifestyle" ? "#101460" : "#000", // Highlight selected category
+          cursor: "pointer",
+        }}
+        onClick={() => filterCoursesByCategory("lifestyle")}
+      >
+        Lifestyle
+      </Typography>
+    </div>
+  </div>
+
+  <div className="all-courses mb-20">
+    {isLoading ? (
+      <CircularProgress size="sm" color="neutral" />
+    ) : (
+      courses.filteredCourses.length > 0 ? (
+        courses.filteredCourses.map((course) => (
+          <CourseCard key={course._id} course={course} />
+        ))
+      ) : (
+        "Oops! No course is currently offered in this category. Return later!"
+      )
+    )}
+  </div>
+</Main>
+
+
+
   );
 }
 

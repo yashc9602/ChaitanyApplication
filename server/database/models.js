@@ -28,7 +28,18 @@ const adminSchema = new mongoose.Schema({
 const courseSchema = new mongoose.Schema({
   title: String,
   description: String,
-  price: Number,
+  prices: [
+    {
+      currency: {
+        type: String,
+        required: true, // Require the currency field
+      },
+      amount: {
+        type: Number,
+        required: true, // Require the amount field
+      },
+    },
+  ],
   imageLink: String,
   published: Boolean,
   category: {
@@ -36,6 +47,7 @@ const courseSchema = new mongoose.Schema({
     enum: ['language', 'skill', 'lifestyle'],
   },
 });
+
 
 const batchSchema = new mongoose.Schema({
   name: String,

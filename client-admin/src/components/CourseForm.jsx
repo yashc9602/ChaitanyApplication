@@ -18,8 +18,8 @@ function CourseForm({
   setTitle,
   description,
   setDescription,
-  price,
-  setPrice,
+  prices,
+  setPrices,
   imageLink,
   setImageLink,
   published,
@@ -28,6 +28,35 @@ function CourseForm({
   setCategory,
 }) {
   const [message, setMessage] = useState("");
+
+  // Function to add a new price entry for a currency
+  const addPrice = () => {
+    const newPrices = [...prices];
+    newPrices.push({ currency: "USD", amount: "" });
+    setPrices(newPrices);
+  };
+
+  // Function to update the price for a specific currency
+  const updatePrice = (index, value) => {
+    const newPrices = [...prices];
+    newPrices[index].amount = parseFloat(value);
+    setPrices(newPrices);
+  };
+
+  // Function to update the currency for a specific price entry
+  const updateCurrency = (index, selectedCurrency) => {
+    const newPrices = [...prices];
+    newPrices[index].currency = selectedCurrency;
+    setPrices(newPrices);
+  };
+
+  // Function to remove a price entry for a currency
+  const removePrice = (index) => {
+    const newPrices = [...prices];
+    newPrices.splice(index, 1);
+    setPrices(newPrices);
+  };
+
   return (
     <div className="page">
       <div className="title">
@@ -81,34 +110,74 @@ function CourseForm({
           value={imageLink}
           onChange={(e) => setImageLink(e.target.value)}
         />
-        <FormControl>
-          <InputLabel
-            style={{ paddingRight: "5px" }}
-            htmlFor="outlined-adornment-amount"
-          >
-            Amount
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Amount"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </FormControl>
+        {prices.map((priceEntry, index) => (
+          <div key={index}>
+            <FormControl>
+              <InputLabel
+                style={{ paddingRight: "5px" }}
+                htmlFor={`outlined-adornment-amount-${index}`}
+              >
+                Amount ({priceEntry.currency})
+              </InputLabel>
+              <OutlinedInput
+                id={`outlined-adornment-amount-${index}`}
+                startAdornment={
+                  <InputAdornment position="start"></InputAdornment>
+                }
+                label={`Amount (${priceEntry.currency})`}
+                value={priceEntry.amount}
+                onChange={(e) => updatePrice(index, e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <InputLabel>Currency</InputLabel>
+              <Select
+                value={priceEntry.currency}
+                onChange={(e) => updateCurrency(index, e.target.value)}
+              >
+                <MenuItem value="USD">USD</MenuItem>
+                <MenuItem value="EUR">EUR</MenuItem>
+                <MenuItem value="GBP">GBP</MenuItem>
+                <MenuItem value="JPY">JPY</MenuItem>
+                <MenuItem value="CAD">CAD</MenuItem>
+                <MenuItem value="AUD">AUD</MenuItem>
+                <MenuItem value="INR">INR</MenuItem>
+                {/* Add more currencies here */}
+              </Select>
+            </FormControl>
+            <Button
+              style={{
+                backgroundColor: "#FF0000",
+                color: "#FFFFFF",
+                marginLeft: "10px",
+              }}
+              className="button"
+              variant="contained"
+              onClick={() => removePrice(index)}
+            >
+              Remove
+            </Button>
+          </div>
+        ))}
+        <Button
+          style={{ backgroundColor: "#101460", marginTop: "10px" }}
+          className="button"
+          variant="contained"
+          onClick={addPrice}
+        >
+          Add Price
+        </Button>
         <InputLabel id="demo-simple-select-label">Is Published</InputLabel>
         <Select
-          style={{ padding: "0px" }}
+          style={{ padding: "0px", marginTop: "10px" }}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={published}
-          label=""
           onChange={(e) => setPublished(e.target.value)}
         >
           <MenuItem value={false}>False</MenuItem>
           <MenuItem value={true}>True</MenuItem>
         </Select>
-        {/* <input type="file" accept="image/*" /> */}
         <FormControl>
           <InputLabel id="category-label">Category</InputLabel>
           <Select
@@ -125,7 +194,7 @@ function CourseForm({
 
         <br />
         <Button
-          style={{ backgroundColor: "#101460" }}
+          style={{ backgroundColor: "#101460", marginTop: "10px" }}
           className="button"
           variant="contained"
           onClick={() => (isUpdate ? updateCourse() : createCourse())}

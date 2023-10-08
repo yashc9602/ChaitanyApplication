@@ -8,7 +8,7 @@ import { useState } from "react";
 
 function CourseCard(props) {
   const navigate = useNavigate();
-  const [isMoveOver, setIsMoueOver] = useState(false);
+  const [isMouseOver, setIsMouseOver] = useState(false);
   return (
     <div>
       <Card
@@ -18,11 +18,11 @@ function CourseCard(props) {
           flex: 1,
           flexDirection: "column",
           fontFamily: "Arial, sans-serif",
-          border: isMoveOver ? "1px solid #bc1c44" : "1px solid lightsteelblue",
+          border: isMouseOver ? "1px solid #bc1c44" : "1px solid lightsteelblue",
           borderRadius: "5%",
         }}
-        onMouseOver={() => setIsMoueOver(true)}
-        onMouseLeave={() => setIsMoueOver(false)}
+        onMouseOver={() => setIsMouseOver(true)}
+        onMouseLeave={() => setIsMouseOver(false)}
         onClick={() => {
           navigate(`/courses/${props.course._id}`);
         }}
@@ -38,7 +38,7 @@ function CourseCard(props) {
               gutterBottom
               variant="h5"
               component="div"
-              style={{ fontWeight: "700", color: isMoveOver && "#bc1c44" }}
+              style={{ fontWeight: "700", color: isMouseOver && "#bc1c44" }}
             >
               {props.course.title}
             </Typography>
@@ -58,15 +58,6 @@ function CourseCard(props) {
               }}
             >
               {props.course.description}
-            </Typography>
-            <br />
-            <Typography
-              gutterBottom
-              variant="h6"
-              component="div"
-              style={{ fontWeight: "900" }}
-            >
-              ${props.course.price}
             </Typography>
           </CardContent>
         </div>

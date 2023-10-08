@@ -2,22 +2,57 @@ import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
-import { useNavigate } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useSetRecoilState } from "recoil";
-import { teacherState } from "../store/atoms/teacher"; // Make sure to import the correct teacher atom
+import { teacherState } from "../store/atoms/teacher";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 
 import "../index.css";
 
+const cardStyle = {
+  padding: "20px",
+  width: "300px",
+  margin: "auto",
+  marginTop: "50px",
+  backgroundColor: "#f7f7f7",
+  borderRadius: "8px",
+  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+};
+
+const textFieldStyle = {
+  marginBottom: "15px",
+};
+
+const buttonStyle = {
+  backgroundColor: "#101460",
+  color: "#fff",
+};
+
+const errorStyle = {
+  color: "#bc1c44",
+  fontWeight: "500",
+  fontSize: "16px",
+  marginBottom: "15px",
+  textAlign: "center",
+};
+
+const linkStyle = {
+  color: "#101460",
+  textDecoration: "none",
+  fontWeight: "500",
+  fontSize: "16px",
+};
+
 function TeacherLoginPage() {
   const [teacher, setTeacher] = useState({ email: "", password: "" });
-  const setTeacherRecoil = useSetRecoilState(teacherState); // Make sure to use the correct teacher atom
-  const [message, setMessage] = useState();
+  const setTeacherRecoil = useSetRecoilState(teacherState);
+  const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
-
+  
   const handleLogin = async () => {
     if (teacher.email.trim() === "" || teacher.password.trim() === "") {
       setMessage("Email/Password field cannot be empty.");
@@ -40,9 +75,9 @@ function TeacherLoginPage() {
 
         setMessage("");
         toast.success(response.data.message);
-        navigate("/teacher/TeacherDashboard"); // Update the destination URL
+        navigate("/teacher/batch");
       } catch (err) {
-        console.log(err);
+        console.error(err);
         setMessage(err.response.data.message);
       }
     }
@@ -68,22 +103,10 @@ function TeacherLoginPage() {
           Login To Teacher Dashboard
         </Typography>
         {message && (
-          <div>
-            <p
-              style={{
-                textAlign: "center",
-                color: "#bc1c44",
-                fontWeight: "500",
-                fontSize: "20px",
-                marginBottom: "5px",
-              }}
-            >
-              {message}
-            </p>
-          </div>
+          <p style={errorStyle}>{message}</p>
         )}
       </div>
-      <Card className="form">
+      <Card style={cardStyle}>
         <TextField
           id="email"
           label="Email"
@@ -93,6 +116,8 @@ function TeacherLoginPage() {
           onChange={(e) =>
             setTeacher((prev) => ({ ...prev, email: e.target.value }))
           }
+          style={textFieldStyle}
+          fullWidth
         />
         <TextField
           id="password"
@@ -103,29 +128,24 @@ function TeacherLoginPage() {
           onChange={(e) =>
             setTeacher((prev) => ({ ...prev, password: e.target.value }))
           }
+          style={textFieldStyle}
+          fullWidth
         />
         <Button
-          style={{ backgroundColor: "#101460" }}
-          className="button"
+          style={buttonStyle}
           variant="contained"
           onClick={handleLogin}
+          fullWidth
         >
           Login
         </Button>
-        <br></br>
-        <div>
-          <h3 style={{ fontWeight: "500" }}>
-            New here? Click here to register a new account.
-          </h3>
-          <br />
-          <Button
-            style={{ backgroundColor: "#101460" }}
-            className="button"
-            variant="contained"
-            onClick={() => navigate("/teacher/register")} // Update the registration route
-          >
-            Register
-          </Button>
+        <div style={{ marginTop: "15px", textAlign: "center" }}>
+          <Typography variant="h6">
+            New here?{" "}
+            <a href="/teacher/register" style={linkStyle}>
+              Click here to register a new account.
+            </a>
+          </Typography>
         </div>
       </Card>
     </div>

@@ -30,32 +30,29 @@ function CourseMaterials() {
   }, [batchId]);
 
   const handleDownloadMaterial = (materialId, filename) => {
-    // Make a request to download the material by ID
     axios
       .get(
-        `http://localhost:3000/users/batch/${batchId}/download/${materialId}`,
+        `http://localhost:3000/users/batch/${batchId}/materials/${materialId}/download`,
         {
-          responseType: "blob", // Set response type to blob to handle binary data
+          responseType: "blob",
         }
       )
       .then((response) => {
-        // Create a blob URL for the file
         const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
-
-        // Create an anchor element to trigger the download
+  
         const a = document.createElement("a");
         a.href = url;
-        a.download = filename || "material"; // You can provide a default filename
+        a.download = filename || "material";
         a.click();
-
-        // Revoke the blob URL to free up resources
+  
         window.URL.revokeObjectURL(url);
       })
       .catch((error) => {
         console.error("Error downloading material:", error);
       });
   };
+  
 
   return (
     <Box

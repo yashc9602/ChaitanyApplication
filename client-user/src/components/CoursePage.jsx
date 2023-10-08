@@ -18,14 +18,16 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import DownloadIcon from "@mui/icons-material/Download";
 import ClosedCaptionIcon from "@mui/icons-material/ClosedCaption";
 import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
-// import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
 import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import "./coursesStyles.css";
 
 function CoursePage() {
   const { id } = useParams();
   const [course, setCourse] = useState({});
   const [purCourses, setPurchasedCourses] = useState([]);
+  const [selectedPrice, setSelectedPrice] = useState(""); // Store the selected price
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,7 +55,7 @@ function CoursePage() {
   }, [id]);
 
   // check if the course is purchased or not
-  const isPurchased = purCourses.filter((item) => item._id == id).length === 1;
+  const isPurchased = purCourses.filter((item) => item._id === id).length === 1;
 
   const makePayment = () => {
     navigate(`/courses/${id}/payment`);
@@ -81,25 +83,46 @@ function CoursePage() {
 
         <div>
           {!isPurchased ? (
-            <Button
-              variant="contained"
-              style={{
-                backgroundColor: isPurchased ? "green" : "#bc1c44",
-                padding: "10px 20px",
-                fontWeight: "700",
-                fontSize: "1rem",
-                borderRadius: "50px",
-              }}
-              onClick={makePayment}
-            >
-              BUY @ ${course.price}
-            </Button>
+            <div>
+              <Select
+                value={selectedPrice}
+                onChange={(e) => setSelectedPrice(e.target.value)}
+                variant="outlined"
+                style={{
+                  padding: "10px 20px",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                }}
+              >
+                {course.prices.map((priceEntry, index) => (
+                  <MenuItem
+                    key={index}
+                    value={priceEntry.amount}
+                  >{`${priceEntry.currency} ${priceEntry.amount}`}</MenuItem>
+                ))}
+              </Select>
+              <Button
+                variant="contained"
+                style={{
+                  backgroundColor: "#bc1c44",
+                  padding: "10px 20px",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  borderRadius: "50px",
+                  marginLeft: "10px",
+                }}
+                onClick={makePayment}
+              >
+                Buy
+              </Button>
+            </div>
           ) : (
             <div>
               <Button
                 variant="contained"
                 style={{
-                  backgroundColor: isPurchased ? "green" : "#ccd5ae",
+                  backgroundColor: "green",
                   padding: "10px 20px",
                   fontWeight: "700",
                   fontSize: "1rem",
@@ -159,10 +182,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <SignalCellularAltIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="Beginner to Pro
-"
-                        />
+                        <ListItemText primary="Beginner to Pro" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -170,7 +190,7 @@ function CoursePage() {
                         <ListItemIcon>
                           <OndemandVideoIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Live Interation" />
+                        <ListItemText primary="Live Interaction" />
                       </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding>
@@ -202,22 +222,9 @@ function CoursePage() {
                         <ListItemIcon>
                           <MilitaryTechIcon />
                         </ListItemIcon>
-                        <ListItemText
-                          primary="Certificate of completion
-"
-                        />
+                        <ListItemText primary="Certificate of Completion" />
                       </ListItemButton>
                     </ListItem>
-                    {/* <ListItem disablePadding>
-                      <ListItemButton>
-                        <ListItemIcon>
-                          <AllInclusiveIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary="Lifetime access"
-                        />
-                      </ListItemButton>
-                    </ListItem> */}
                   </List>
                 </nav>
               </Box>

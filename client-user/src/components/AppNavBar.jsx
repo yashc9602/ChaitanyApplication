@@ -120,7 +120,7 @@ export default function AppNavBar() {
             onMouseOver={() => (document.body.style.cursor = "pointer")}
             onClick={() => navigate("/")}
           >
-            Chaitany
+            Chaitanya
           </Typography>
           {user.isLoggedIn ? (
             <Button

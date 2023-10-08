@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CourseForm from "./CourseForm";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useEffect } from "react";
 
 function CreateCourse(props) {
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("");
   const [description, setDescription] = React.useState("");
-  const [price, setPrice] = useState("");
+  const [prices, setPrices] = useState([{ currency: "USD", amount: "" }]);
   const [imageLink, setImageLink] = useState("");
   const [published, setPublished] = useState(false);
-  const [category, setCategory] = useState("language"); 
+  const [category, setCategory] = useState("language");
 
   useEffect(() => {
     if (props.isUpdate) {
       setTitle(props.course.title);
       setDescription(props.course.description);
-      setPrice(props.course.price);
+      setPrices(props.course.prices); // Set prices from the course data
       setImageLink(props.course.imageLink);
       setPublished(props.course.published);
       setCategory(props.course.category);
@@ -34,7 +33,7 @@ function CreateCourse(props) {
       body: JSON.stringify({
         title,
         description,
-        price,
+        prices, // Pass the array of prices
         imageLink,
         published,
         category,
@@ -46,7 +45,7 @@ function CreateCourse(props) {
         setDescription("");
         setImageLink("");
         setTitle("");
-        setPrice("");
+        setPrices([{ currency: "USD", amount: "" }]); // Reset prices
         setPublished(false); // Reset published state
         setCategory("language"); // Reset category
         navigate("/courses");
@@ -64,7 +63,7 @@ function CreateCourse(props) {
       body: JSON.stringify({
         title,
         description,
-        price,
+        prices, // Pass the array of prices
         imageLink,
         published,
         category,
@@ -87,8 +86,8 @@ function CreateCourse(props) {
       setTitle={setTitle}
       description={description}
       setDescription={setDescription}
-      price={price}
-      setPrice={setPrice}
+      prices={prices} // Pass the array of prices
+      setPrices={setPrices}
       imageLink={imageLink}
       setImageLink={setImageLink}
       published={published}

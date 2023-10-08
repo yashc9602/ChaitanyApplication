@@ -65,7 +65,7 @@ function LoginPage() {
             marginBottom: "10px",
           }}
         >
-          Login To Chaitany
+          Login To Chaitanya
         </Typography>
         {message && (
           <div>

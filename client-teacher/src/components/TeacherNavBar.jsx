@@ -95,7 +95,7 @@ export default function TeacherNavBar() {
         position="fixed"
         open={open}
         style={{
-          backgroundColor: "#101460",
+          backgroundColor: "#023047",
           height: "60px",
           width: "100%",
         }}

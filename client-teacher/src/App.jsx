@@ -19,7 +19,6 @@ function App() {
       <Routes>
         <Route path="/" element={<TeacherLandingPage />} />
         <Route path="/teacher" element={<TeacherLandingPage />} />
-        {/* <Route path="/teacher/course" element={<YourCourses />} /> */}
         <Route path="/teacher/batch" element={<YourBatches />} />
         <Route path="/teacher/upload-materials" element={<UploadMaterials />} />
         <Route path="/teacher/register" element={<TeacherRegistration />} />
