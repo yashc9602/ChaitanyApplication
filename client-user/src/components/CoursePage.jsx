@@ -21,13 +21,12 @@ import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import "./coursesStyles.css";
 
 function CoursePage() {
   const { id } = useParams();
   const [course, setCourse] = useState({});
   const [purCourses, setPurchasedCourses] = useState([]);
-  const [selectedPrice, setSelectedPrice] = useState(""); // Store the selected price
+  const [selectedPrice, setSelectedPrice] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,27 +53,27 @@ function CoursePage() {
       .catch((err) => console.log(err));
   }, [id]);
 
-  // check if the course is purchased or not
-  const isPurchased = purCourses.filter((item) => item._id === id).length === 1;
+  const isPurchased = purCourses.find((item) => item._id === id);
 
   const makePayment = () => {
     navigate(`/courses/${id}/payment`);
   };
 
   return (
-    <div className="single-course">
-      <div className="text-container">
+    <div className="single-course p-4">
+      <div className="text-container flex items-center space-x-4">
         <div>
           <img
             src={course.imageLink}
             alt={course.imageLink}
-            width="300px"
-            style={{ borderRadius: "20px" }}
+            className="w-72 rounded-lg shadow-lg"
           />
         </div>
 
         <div>
-          <h1 className="course-title">{course.title}</h1>
+          <h1 className="course-title text-3xl font-bold">
+            {course.title}
+          </h1>
         </div>
 
         <div>
@@ -82,101 +81,70 @@ function CoursePage() {
         </div>
 
         <div>
-          {!isPurchased ? (
-            <div>
-              <Select
-                value={selectedPrice}
-                onChange={(e) => setSelectedPrice(e.target.value)}
-                variant="outlined"
-                style={{
-                  padding: "10px 20px",
-                  fontWeight: "700",
-                  fontSize: "1rem",
-                  borderRadius: "50px",
-                }}
-              >
-                {course.prices.map((priceEntry, index) => (
-                  <MenuItem
-                    key={index}
-                    value={priceEntry.amount}
-                  >{`${priceEntry.currency} ${priceEntry.amount}`}</MenuItem>
-                ))}
-              </Select>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#bc1c44",
-                  padding: "10px 20px",
-                  fontWeight: "700",
-                  fontSize: "1rem",
-                  borderRadius: "50px",
-                  marginLeft: "10px",
-                }}
-                onClick={makePayment}
-              >
-                Buy
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "green",
-                  padding: "10px 20px",
-                  fontWeight: "700",
-                  fontSize: "1rem",
-                  borderRadius: "50px",
-                }}
-              >
-                Purchased
-              </Button>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#ccd5ae",
-                  padding: "10px 20px",
-                  fontWeight: "700",
-                  fontSize: "1rem",
-                  borderRadius: "50px",
-                  marginLeft: "20px",
-                }}
-              >
-                View Content
-              </Button>
-            </div>
-          )}
-        </div>
+  {!isPurchased ? (
+    <div>
+      {course.prices && course.prices.length > 0 ? ( // Check if prices exists and is an array
+        <Select
+          value={selectedPrice}
+          onChange={(e) => setSelectedPrice(e.target.value)}
+          variant="outlined"
+          className="p-2 font-semibold text-lg rounded-full"
+        >
+          {course.prices.map((priceEntry, index) => (
+            <MenuItem key={index} value={priceEntry.amount}>
+              {`${priceEntry.currency} ${priceEntry.amount}`}
+            </MenuItem>
+          ))}
+        </Select>
+      ) : (
+        <p>No pricing information available</p> // Display a message if prices is undefined or empty
+      )}
+      <Button
+        variant="contained"
+        className="bg-red-500 p-2 font-semibold text-lg rounded-full ml-4"
+        onClick={makePayment}
+      >
+        Buy
+      </Button>
+    </div>
+  ) : (
+    <div>
+      <Button
+        variant="contained"
+        className="bg-green-500 p-2 font-semibold text-lg rounded-full"
+      >
+        Purchased
+      </Button>
+      <Button
+        variant="contained"
+        className="bg-gray-300 p-2 font-semibold text-lg rounded-full ml-4"
+      >
+        View Content
+      </Button>
+    </div>
+  )}
+</div>
       </div>
 
       <div>
         <Card
           sx={{ width: "350px" }}
-          style={{
-            backgroundColor: " #d4a373",
-            color: "white",
-            borderRadius: "10px",
-            paddingRight: "6px",
-            display: "flex",
-            padding: "8px",
-          }}
+          className="bg-orange-300 text-white rounded-lg shadow-lg"
         >
           <CardActionArea>
-            <CardContent style={{ textAlign: "center" }}>
-              <Typography gutterBottom variant="h4" component="div">
+            <CardContent className="text-center">
+              <Typography
+                variant="h4"
+                component="div"
+                className="text-2xl font-semibold"
+              >
                 Course Overview
               </Typography>
-              <br />
               <Box
-                sx={{
-                  bgcolor: "background.paper",
-                  color: "black",
-                  borderRadius: "20px",
-                  padding: "20px 5px",
-                }}
+                className="bg-white text-black rounded-lg p-4 mt-4"
               >
                 <nav aria-label="main mailbox folders">
-                  <List style={{ padding: "10px" }}>
+                  <List>
                     <ListItem disablePadding>
                       <ListItemButton>
                         <ListItemIcon>

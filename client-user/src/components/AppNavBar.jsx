@@ -21,7 +21,7 @@ import { userState } from "../store/atoms/user";
 import Button from "@mui/material/Button";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import "./style.css";
 
 const drawerWidth = 240;
@@ -84,7 +84,7 @@ export default function AppNavBar() {
 
   const handleDrawerOpen = () => {
     setOpen(true);
-    console.log('email: ', user.email)
+    console.log("email: ", user.email);
   };
 
   const handleDrawerClose = () => {
@@ -122,12 +122,19 @@ export default function AppNavBar() {
           >
             Chaitanya
           </Typography>
+          {/* Add About Us and Contact Us options to the left */}
+          <Button color="inherit" onClick={() => navigate("/about")}>
+            About Us
+          </Button>
+          <Button color="inherit" onClick={() => navigate("/contact-us")}>
+            Contact Us
+          </Button>
           {user.isLoggedIn ? (
             <Button
               color="inherit"
               onClick={() => {
-                console.log(`before logout: `)
-                console.log({ user })
+                console.log(`before logout: `);
+                console.log({ user });
                 localStorage.removeItem("token");
                 localStorage.removeItem("isLoggedIn");
                 localStorage.removeItem("email");
@@ -145,7 +152,7 @@ export default function AppNavBar() {
           ) : (
             <div>
               <Button color="inherit" onClick={() => navigate("/register")}>
-              Register
+                Register
               </Button>
               <Button color="inherit" onClick={() => navigate("/login")}>
                 Login
@@ -168,17 +175,19 @@ export default function AppNavBar() {
         open={open}
       >
         <DrawerHeader>
-          {user.isLoggedIn && <List>
-            {/* add user name and email */}
-            <ListItem key='name' disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AccountBoxIcon />
-                </ListItemIcon>
-                <ListItemText primary={user?.username}  />
-              </ListItemButton>
-            </ListItem>
-          </List>}
+          {user.isLoggedIn && (
+            <List>
+              {/* add user name and email */}
+              <ListItem key="name" disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <AccountBoxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={user?.username} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          )}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
